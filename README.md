@@ -408,6 +408,30 @@ Uploads a file using a file input element.
 }
 ```
 
+### get_console_logs
+Returns browser console log entries.
+
+**Parameters:**
+- `sinceMs` (optional): Only return entries newer than now - sinceMs
+  - Type: number
+- `level` (optional): Minimum log level
+  - Type: string
+  - Enum: ["ALL", "SEVERE", "WARNING", "INFO", "DEBUG"]
+- `max` (optional): Maximum number of entries to return
+  - Type: number
+
+**Example:**
+```json
+{
+  "tool": "get_console_logs",
+  "parameters": {
+    "sinceMs": 3000,
+    "level": "ALL",
+    "max": 200
+  }
+}
+```
+
 ### take_screenshot
 Captures a screenshot of the current page.
 

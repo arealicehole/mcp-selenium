@@ -4,7 +4,7 @@ import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mc
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import pkg from 'selenium-webdriver';
-const { Builder, By, Key, until, Actions } = pkg;
+const { Builder, By, Key, until, Actions, logging } = pkg;
 import { Options as ChromeOptions } from 'selenium-webdriver/chrome.js';
 import { Options as FirefoxOptions } from 'selenium-webdriver/firefox.js';
 import { Options as EdgeOptions } from 'selenium-webdriver/edge.js';
@@ -66,6 +66,9 @@ server.tool(
     async ({ browser, options = {} }) => {
         try {
             let builder = new Builder();
+            const prefs = new logging.Preferences();
+            prefs.setLevel(logging.Type.BROWSER, logging.Level.ALL);
+            builder.setLoggingPrefs(prefs);
             let driver;
             switch (browser) {
                 case 'chrome': {
@@ -385,6 +388,45 @@ server.tool(
         } catch (e) {
             return {
                 content: [{ type: 'text', text: `Error uploading file: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "get_console_logs",
+    "returns browser console log entries",
+    {
+        sinceMs: z.number().optional().describe("Only return entries newer than now - sinceMs"),
+        level: z.enum(['ALL', 'SEVERE', 'WARNING', 'INFO', 'DEBUG']).optional().describe("Minimum log level"),
+        max: z.number().min(1).optional().describe("Maximum number of entries to return")
+    },
+    async ({ sinceMs, level = 'ALL', max }) => {
+        try {
+            const driver = getDriver();
+            const browserLogs = await driver.manage().logs().get(logging.Type.BROWSER);
+            const now = Date.now();
+            const minTs = sinceMs ? now - sinceMs : 0;
+            let entries = browserLogs.map(e => ({
+                level: e.level && e.level.name ? e.level.name : String(e.level),
+                message: e.message,
+                timestamp: e.timestamp || now
+            }));
+            if (level && level !== 'ALL') {
+                entries = entries.filter(e => e.level === level);
+            }
+            if (minTs) {
+                entries = entries.filter(e => (e.timestamp ?? 0) >= minTs);
+            }
+            if (max) {
+                entries = entries.slice(-max);
+            }
+            return {
+                content: [{ type: 'json', json: { entries, count: entries.length } }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error getting console logs: ${e.message}` }]
             };
         }
     }
