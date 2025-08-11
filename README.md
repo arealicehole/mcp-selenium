@@ -113,6 +113,24 @@ Or use with NPX in your MCP configuration:
 
 
 
+## Usage Notes
+
+### Browser Compatibility
+- **Chrome**: Works best with headless mode. Use flags `--no-sandbox` and `--disable-dev-shm-usage` for containerized environments
+- **Firefox**: Requires Firefox browser to be installed on the system
+- **Edge**: Supported but requires Edge browser installation
+
+### Known Limitations
+- **Special Keys**: Currently only single character keys work with `press_key`. Special keys like Tab, Enter, Escape are not yet supported
+- **File Upload**: File paths must be accessible within the browser's execution context
+- **Console Logs**: Response format may have validation issues in some MCP clients
+
+### Best Practices
+- Always close browser sessions with `close_session` when done
+- Use headless mode for CI/CD environments
+- Add appropriate timeouts for element finding operations
+- Use CSS selectors for better performance and reliability
+
 ## Tools
 
 ### start_browser
