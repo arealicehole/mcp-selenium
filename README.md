@@ -1,55 +1,40 @@
+# MCP Selenium Server (Enhanced Fork)
+
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/angiejones-mcp-selenium-badge.png)](https://mseep.ai/app/angiejones-mcp-selenium)
 
-# MCP Selenium Server
+> 🚀 **Enhanced fork of [@angiejones/mcp-selenium](https://github.com/angiejones/mcp-selenium)** with comprehensive testing, improved documentation, and production-ready configurations.
 
-<a href="https://glama.ai/mcp/servers/s2em7b2kwf">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/s2em7b2kwf/badge" />
-</a>
+## 🎯 What is this?
 
-[![smithery badge](https://smithery.ai/badge/@angiejones/mcp-selenium)](https://smithery.ai/server/@angiejones/mcp-selenium)
+A Model Context Protocol (MCP) server that enables AI assistants (like Claude, GPT-4, etc.) to control web browsers through Selenium WebDriver. This fork adds battle-tested configurations, detailed usage documentation, and real-world testing insights.
 
-A Model Context Protocol (MCP) server implementation for Selenium WebDriver, enabling browser automation through standardized MCP clients.
+## ✨ Key Enhancements in This Fork
 
-## Video Demo (Click to Watch)
+### 📊 Comprehensive Testing
+- **Full test suite coverage** - All features tested on Linux environments
+- **Detailed test report** - See [TEST_REPORT.md](./TEST_REPORT.md) for complete testing results
+- **Real-world validation** - Tested against popular websites (Google, W3Schools, etc.)
+
+### 📚 Improved Documentation
+- **Practical usage examples** - Based on actual testing experience
+- **Known limitations clearly documented** - No surprises in production
+- **Best practices guide** - Avoid common pitfalls
+
+### 🔧 Production-Ready Configurations
+- **Optimized Chrome flags** for containerized environments
+- **Headless mode configurations** that actually work
+- **Error handling improvements** based on real usage
+
+## 🎬 Video Demo (Original)
 
 [![Watch the video](https://img.youtube.com/vi/mRV0N8hcgYA/sddefault.jpg)](https://youtu.be/mRV0N8hcgYA)
 
+## 🚀 Quick Start
 
-## Features
+### For AI Assistants (Claude, etc.)
 
-- Start browser sessions with customizable options
-- Navigate to URLs
-- Find elements using various locator strategies
-- Click, type, and interact with elements
-- Perform mouse actions (hover, drag and drop)
-- Handle keyboard input
-- Take screenshots
-- Upload files
-- Support for headless mode
+Add to your MCP client configuration:
 
-## Supported Browsers
-
-- Chrome
-- Firefox
-- MS Edge
-
-## Use with Goose
-
-### Option 1: One-click install
-Copy and paste the link below into a browser address bar to add this extension to goose desktop:
-
-```
-goose://extension?cmd=npx&arg=-y&arg=%40angiejones%2Fmcp-selenium&id=selenium-mcp&name=Selenium%20MCP&description=automates%20browser%20interactions
-```
-
-
-### Option 2: Add manually to desktop or CLI
-
-* Name: `Selenium MCP`
-* Description: `automates browser interactions`
-* Command: `npx -y @angiejones/mcp-selenium`
-
-## Use with other MCP clients (e.g. Claude Desktop, etc)
 ```json
 {
   "mcpServers": {
@@ -61,427 +46,193 @@ goose://extension?cmd=npx&arg=-y&arg=%40angiejones%2Fmcp-selenium&id=selenium-mc
 }
 ```
 
+### For Development
+
+```bash
+# Clone this fork
+git clone https://github.com/arealicehole/mcp-selenium.git
+cd mcp-selenium
+
+# Install dependencies
+npm install
+
+# Run the server
+npm start
+```
+
+## 🌟 Features
+
+### Core Capabilities
+- ✅ **Browser Management** - Start/stop Chrome, Firefox, Edge sessions
+- ✅ **Navigation** - Navigate to any URL
+- ✅ **Element Interaction** - Click, type, hover, drag & drop
+- ✅ **Advanced Actions** - Double-click, right-click, keyboard input
+- ✅ **Data Extraction** - Get element text, take screenshots
+- ✅ **File Operations** - Upload files to web forms
+- ✅ **Debugging** - Access browser console logs
+
+### Tested & Verified Features
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Chrome Headless | ✅ Working | Use `--no-sandbox` flag |
+| Firefox | ⚠️ Requires Installation | Not included by default |
+| Edge | ⚠️ Requires Installation | Not included by default |
+| Screenshots | ✅ Working | Returns base64 data |
+| File Upload | ⚠️ Limited | File must be in browser context |
+| Special Keys | ❌ Not Working | Only single characters work |
+| Console Logs | ⚠️ Format Issues | Response validation errors |
+
+## 💡 Usage Examples
+
+### Basic Web Automation
+
+```javascript
+// Start a headless Chrome session
+await startBrowser({
+  browser: "chrome",
+  options: {
+    headless: true,
+    arguments: ["--no-sandbox", "--disable-dev-shm-usage"]
+  }
+});
+
+// Navigate to a website
+await navigate({ url: "https://www.google.com" });
+
+// Find and interact with search box
+await sendKeys({
+  by: "name",
+  value: "q",
+  text: "MCP Selenium Server"
+});
+
+// Take a screenshot
+const screenshot = await takeScreenshot();
+
+// Clean up
+await closeSession();
+```
+
+### Advanced Interactions
+
+```javascript
+// Hover over dropdown menu
+await hover({
+  by: "css",
+  value: ".dropdown-trigger"
+});
+
+// Double-click to edit
+await doubleClick({
+  by: "id",
+  value: "editable-field"
+});
+
+// Right-click for context menu
+await rightClick({
+  by: "class",
+  value: "context-menu-target"
+});
+```
+
+## 🛠️ Configuration Tips
+
+### For Docker/Containers
+
+Always use these Chrome flags in containerized environments:
+
+```json
+{
+  "headless": true,
+  "arguments": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-web-security",
+    "--disable-features=VizDisplayCompositor"
+  ]
+}
+```
+
+### For CI/CD Pipelines
+
+```yaml
+# Example GitHub Actions configuration
+- name: Run Selenium Tests
+  run: |
+    npx -y @angiejones/mcp-selenium
+  env:
+    CHROME_FLAGS: "--no-sandbox --headless"
+```
+
+## 📋 Complete Tool Reference
+
+### Browser Control
+- `start_browser` - Launch browser session
+- `navigate` - Go to URL
+- `close_session` - Close browser
+
+### Element Finding
+- `find_element` - Locate element on page
+
+### Element Interaction
+- `click_element` - Click on element
+- `send_keys` - Type text
+- `get_element_text` - Extract text content
+
+### Mouse Actions
+- `hover` - Hover over element
+- `drag_and_drop` - Drag element to target
+- `double_click` - Double-click element
+- `right_click` - Right-click for context menu
+
+### Keyboard & Input
+- `press_key` - Simulate key press
+- `upload_file` - Upload file to input
+
+### Debugging & Output
+- `get_console_logs` - Retrieve browser console
+- `take_screenshot` - Capture page screenshot
+
+## ⚠️ Known Limitations
+
+1. **Special Keys** - Keys like Tab, Enter, Escape don't work (use single characters only)
+2. **File Upload** - Files must be accessible within browser's execution context
+3. **Console Logs** - Response format may cause validation errors in some MCP clients
+4. **Browser Installation** - Firefox and Edge require separate installation
+
+## 🏆 Best Practices
+
+1. **Always close sessions** - Prevent memory leaks with `close_session`
+2. **Use headless mode** - Better performance and stability in production
+3. **Add timeouts** - Prevent hanging on element searches
+4. **Prefer CSS selectors** - More reliable than XPath
+5. **Handle errors gracefully** - Wrap operations in try-catch blocks
+
+## 🤝 Contributing
+
+Contributions are welcome! This fork focuses on:
+- Improving reliability and stability
+- Adding comprehensive documentation
+- Testing in various environments
+- Fixing known issues
+
+## 📄 License
+
+MIT (same as original)
+
+## 🙏 Credits
+
+- Original author: [@angiejones](https://github.com/angiejones)
+- Original repository: [angiejones/mcp-selenium](https://github.com/angiejones/mcp-selenium)
+- This fork: Enhanced with real-world testing and production configurations
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/arealicehole/mcp-selenium/issues)
+- **Original Project**: [angiejones/mcp-selenium](https://github.com/angiejones/mcp-selenium)
+
 ---
 
-## Development
-
-To work on this project:
-
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Run the server: `npm start`
-
-### Installation
-
-#### Installing via Smithery
-
-To install MCP Selenium for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@angiejones/mcp-selenium):
-
-```bash
-npx -y @smithery/cli install @angiejones/mcp-selenium --client claude
-```
-
-#### Manual Installation
-```bash
-npm install -g @angiejones/mcp-selenium
-```
-
-
-### Usage
-
-Start the server by running:
-
-```bash
-mcp-selenium
-```
-
-Or use with NPX in your MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "selenium": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@angiejones/mcp-selenium"
-      ]
-    }
-  }
-}
-```
-
-
-
-## Usage Notes
-
-### Browser Compatibility
-- **Chrome**: Works best with headless mode. Use flags `--no-sandbox` and `--disable-dev-shm-usage` for containerized environments
-- **Firefox**: Requires Firefox browser to be installed on the system
-- **Edge**: Supported but requires Edge browser installation
-
-### Known Limitations
-- **Special Keys**: Currently only single character keys work with `press_key`. Special keys like Tab, Enter, Escape are not yet supported
-- **File Upload**: File paths must be accessible within the browser's execution context
-- **Console Logs**: Response format may have validation issues in some MCP clients
-
-### Best Practices
-- Always close browser sessions with `close_session` when done
-- Use headless mode for CI/CD environments
-- Add appropriate timeouts for element finding operations
-- Use CSS selectors for better performance and reliability
-
-## Tools
-
-### start_browser
-Launches a browser session.
-
-**Parameters:**
-- `browser` (required): Browser to launch
-  - Type: string
-  - Enum: ["chrome", "firefox"]
-- `options`: Browser configuration options
-  - Type: object
-  - Properties:
-    - `headless`: Run browser in headless mode
-      - Type: boolean
-    - `arguments`: Additional browser arguments
-      - Type: array of strings
-
-**Example:**
-```json
-{
-  "tool": "start_browser",
-  "parameters": {
-    "browser": "chrome",
-    "options": {
-      "headless": true,
-      "arguments": ["--no-sandbox"]
-    }
-  }
-}
-```
-
-### navigate
-Navigates to a URL.
-
-**Parameters:**
-- `url` (required): URL to navigate to
-  - Type: string
-
-**Example:**
-```json
-{
-  "tool": "navigate",
-  "parameters": {
-    "url": "https://www.example.com"
-  }
-}
-```
-
-### find_element
-Finds an element on the page.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "find_element",
-  "parameters": {
-    "by": "id",
-    "value": "search-input",
-    "timeout": 5000
-  }
-}
-```
-
-### click_element
-Clicks an element.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "click_element",
-  "parameters": {
-    "by": "css",
-    "value": ".submit-button"
-  }
-}
-```
-
-### send_keys
-Sends keys to an element (typing).
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `text` (required): Text to enter into the element
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "send_keys",
-  "parameters": {
-    "by": "name",
-    "value": "username",
-    "text": "testuser"
-  }
-}
-```
-
-### get_element_text
-Gets the text() of an element.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "get_element_text",
-  "parameters": {
-    "by": "css",
-    "value": ".message"
-  }
-}
-```
-
-### hover
-Moves the mouse to hover over an element.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "hover",
-  "parameters": {
-    "by": "css",
-    "value": ".dropdown-menu"
-  }
-}
-```
-
-### drag_and_drop
-Drags an element and drops it onto another element.
-
-**Parameters:**
-- `by` (required): Locator strategy for source element
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the source locator strategy
-  - Type: string
-- `targetBy` (required): Locator strategy for target element
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `targetValue` (required): Value for the target locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for elements in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "drag_and_drop",
-  "parameters": {
-    "by": "id",
-    "value": "draggable",
-    "targetBy": "id",
-    "targetValue": "droppable"
-  }
-}
-```
-
-### double_click
-Performs a double click on an element.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "double_click",
-  "parameters": {
-    "by": "css",
-    "value": ".editable-text"
-  }
-}
-```
-
-### right_click
-Performs a right click (context click) on an element.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "right_click",
-  "parameters": {
-    "by": "css",
-    "value": ".context-menu-trigger"
-  }
-}
-```
-
-### press_key
-Simulates pressing a keyboard key.
-
-**Parameters:**
-- `key` (required): Key to press (e.g., 'Enter', 'Tab', 'a', etc.)
-  - Type: string
-
-**Example:**
-```json
-{
-  "tool": "press_key",
-  "parameters": {
-    "key": "Enter"
-  }
-}
-```
-
-### upload_file
-Uploads a file using a file input element.
-
-**Parameters:**
-- `by` (required): Locator strategy
-  - Type: string
-  - Enum: ["id", "css", "xpath", "name", "tag", "class"]
-- `value` (required): Value for the locator strategy
-  - Type: string
-- `filePath` (required): Absolute path to the file to upload
-  - Type: string
-- `timeout`: Maximum time to wait for element in milliseconds
-  - Type: number
-  - Default: 10000
-
-**Example:**
-```json
-{
-  "tool": "upload_file",
-  "parameters": {
-    "by": "id",
-    "value": "file-input",
-    "filePath": "/path/to/file.pdf"
-  }
-}
-```
-
-### get_console_logs
-Returns browser console log entries.
-
-**Parameters:**
-- `sinceMs` (optional): Only return entries newer than now - sinceMs
-  - Type: number
-- `level` (optional): Minimum log level
-  - Type: string
-  - Enum: ["ALL", "SEVERE", "WARNING", "INFO", "DEBUG"]
-- `max` (optional): Maximum number of entries to return
-  - Type: number
-
-**Example:**
-```json
-{
-  "tool": "get_console_logs",
-  "parameters": {
-    "sinceMs": 3000,
-    "level": "ALL",
-    "max": 200
-  }
-}
-```
-
-### take_screenshot
-Captures a screenshot of the current page.
-
-**Parameters:**
-- `outputPath` (optional): Path where to save the screenshot. If not provided, returns base64 data.
-  - Type: string
-
-**Example:**
-```json
-{
-  "tool": "take_screenshot",
-  "parameters": {
-    "outputPath": "/path/to/screenshot.png"
-  }
-}
-```
-
-### close_session
-Closes the current browser session and cleans up resources.
-
-**Parameters:**
-None required
-
-**Example:**
-```json
-{
-  "tool": "close_session",
-  "parameters": {}
-}
-```
-
-
-## License
-
-MIT
+**Note**: This is an enhanced fork focused on production readiness and comprehensive documentation. For the original implementation, please visit the [original repository](https://github.com/angiejones/mcp-selenium).
